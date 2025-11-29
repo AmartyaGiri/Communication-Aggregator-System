@@ -1,0 +1,11 @@
+{
+  "name": "communication-aggregator-system",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:router": "cd task-router-service && npm start",
+    "start:delivery": "cd delivery-service && npm start",
+    "start:logging": "cd logging-service && npm start",
+    "install:all": "cd task-router-service && npm install && cd ../delivery-service && npm install && cd ../logging-service && npm install"
+  }
+}

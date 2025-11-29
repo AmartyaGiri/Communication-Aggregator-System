@@ -1,0 +1,244 @@
+{
+  "info": {
+    "_postman_id": "b22b5a2c-3f12-4d0d-9f11-communication-aggregator",
+    "name": "Communication Aggregator System",
+    "description": "End-to-end tests for Task Router, Delivery, and Logging services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Health - Task Router",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["health"]
+            },
+            "description": "Check if Task Router Service is running"
+          },
+          "response": []
+        },
+        {
+          "name": "Health - Delivery",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4001/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4001",
+              "path": ["health"]
+            },
+            "description": "Check if Delivery Service is running"
+          },
+          "response": []
+        },
+        {
+          "name": "Health - Logging",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4002/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4002",
+              "path": ["health"]
+            },
+            "description": "Check if Logging Service is running"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Message Routing",
+      "item": [
+        {
+          "name": "Send Email Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channel\": \"email\",\n  \"to\": \"user@example.com\",\n  \"message\": \"Hello from the Communication Aggregator!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["messages"]
+            },
+            "description": "Route an email message through the Task Router"
+          },
+          "response": []
+        },
+        {
+          "name": "Send SMS Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channel\": \"sms\",\n  \"to\": \"+19998887777\",\n  \"message\": \"Test SMS from Communication Aggregator\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["messages"]
+            },
+            "description": "Route an SMS message through the Task Router"
+          },
+          "response": []
+        },
+        {
+          "name": "Send WhatsApp Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channel\": \"whatsapp\",\n  \"to\": \"+19998887777\",\n  \"message\": \"Test WhatsApp from Communication Aggregator\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["messages"]
+            },
+            "description": "Route a WhatsApp message through the Task Router"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Testing Features",
+      "item": [
+        {
+          "name": "Duplicate Message Test",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"11111111-1111-1111-1111-111111111111\",\n  \"channel\": \"email\",\n  \"to\": \"user@example.com\",\n  \"message\": \"This will be sent once and then ignored.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["messages"]
+            },
+            "description": "Test duplicate detection. Send this request twice - the second one should return 'duplicate_ignored' status."
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Payload Test",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channel\": \"email\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:4000/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["messages"]
+            },
+            "description": "Test validation - missing required fields should return 400 error"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delivery Service",
+      "item": [
+        {
+          "name": "View Stored Messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4001/messages",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4001",
+              "path": ["messages"]
+            },
+            "description": "View all messages stored in the Delivery Service SQLite database"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
