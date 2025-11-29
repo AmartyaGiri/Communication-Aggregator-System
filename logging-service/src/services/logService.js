@@ -1,5 +1,5 @@
-const config = require('../config');
-const esClient = require('../clients/elasticsearchClient');
+const config = require("../config");
+const esClient = require("../clients/elasticsearchClient");
 
 async function persistLog(doc) {
   if (!esClient) {
@@ -9,10 +9,10 @@ async function persistLog(doc) {
   try {
     await esClient.index({
       index: config.elasticIndex,
-      document: doc
+      document: doc,
     });
   } catch (err) {
-    console.error('[logging-service] Failed to index log', err.message);
+    console.error("[logging-service] Failed to index log", err.message);
   }
 }
 
@@ -21,18 +21,16 @@ async function recordLog(event = {}) {
     traceId: event.traceId || null,
     spanId: event.spanId || null,
     parentSpanId: event.parentSpanId || null,
-    service: event.service || 'unknown',
-    level: event.level || 'info',
-    message: event.message || '',
+    service: event.service || "unknown",
+    level: event.level || "info",
+    message: event.message || "",
     metadata: event.metadata || {},
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
-  console.log('[Logging Service]', JSON.stringify(doc));
+  console.log("[Logging Service]", JSON.stringify(doc));
   await persistLog(doc);
   return doc;
 }
 
 module.exports = { recordLog };
-
-

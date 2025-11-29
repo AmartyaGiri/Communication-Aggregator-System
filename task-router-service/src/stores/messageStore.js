@@ -8,7 +8,7 @@ class MessageStore {
   }
 
   markPending(messageId) {
-    this.messages.set(messageId, { status: 'pending', attempts: 0 });
+    this.messages.set(messageId, { status: "pending", attempts: 0 });
   }
 
   incrementAttempts(messageId) {
@@ -21,14 +21,14 @@ class MessageStore {
   markDelivered(messageId) {
     const record = this.messages.get(messageId);
     if (record) {
-      record.status = 'delivered';
+      record.status = "delivered";
     }
   }
 
   markFailed(messageId) {
     const record = this.messages.get(messageId);
     if (record) {
-      record.status = 'failed';
+      record.status = "failed";
     }
   }
 
@@ -38,5 +38,3 @@ class MessageStore {
 }
 
 module.exports = new MessageStore();
-
-

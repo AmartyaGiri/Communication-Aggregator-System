@@ -1,15 +1,15 @@
-const express = require('express');
-const { v4: uuidv4 } = require('uuid');
-const { validatePayload } = require('../utils/validator');
-const { sendLog } = require('../clients/loggingClient');
-const { forwardToChannel } = require('../clients/deliveryClient');
-const messageStore = require('../stores/messageStore');
-const config = require('../config');
+const express = require("express");
+const { v4: uuidv4 } = require("uuid");
+const { validatePayload } = require("../utils/validator");
+const { sendLog } = require("../clients/loggingClient");
+const { forwardToChannel } = require("../clients/deliveryClient");
+const messageStore = require("../stores/messageStore");
+const config = require("../config");
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
-  const traceId = req.headers['x-trace-id'] || uuidv4();
+router.post("/", async (req, res) => {
+  const traceId = req.headers["x-trace-id"] || uuidv4();
   const requestSpanId = uuidv4();
   const payload = req.body;
 
@@ -18,10 +18,10 @@ router.post('/', async (req, res) => {
     await sendLog({
       traceId,
       spanId: requestSpanId,
-      service: 'task-router-service',
-      level: 'error',
-      message: 'Validation failed',
-      metadata: { errors: validationErrors }
+      service: "task-router-service",
+      level: "error",
+      message: "Validation failed",
+      metadata: { errors: validationErrors },
     });
     return res.status(400).json({ errors: validationErrors });
   }
@@ -33,12 +33,12 @@ router.post('/', async (req, res) => {
     await sendLog({
       traceId,
       spanId: requestSpanId,
-      service: 'task-router-service',
-      level: 'info',
-      message: 'Duplicate message detected, ignoring',
-      metadata: { messageId }
+      service: "task-router-service",
+      level: "info",
+      message: "Duplicate message detected, ignoring",
+      metadata: { messageId },
     });
-    return res.status(200).json({ status: 'duplicate_ignored', messageId });
+    return res.status(200).json({ status: "duplicate_ignored", messageId });
   }
 
   messageStore.markPending(messageId);
@@ -54,10 +54,10 @@ router.post('/', async (req, res) => {
         traceId,
         spanId: routingSpanId,
         parentSpanId: requestSpanId,
-        service: 'task-router-service',
-        level: 'info',
+        service: "task-router-service",
+        level: "info",
         message: `Routing message to ${payload.channel}`,
-        metadata: { messageId, channel: payload.channel }
+        metadata: { messageId, channel: payload.channel },
       });
 
       const { data } = await forwardToChannel(
@@ -71,17 +71,17 @@ router.post('/', async (req, res) => {
       await sendLog({
         traceId,
         spanId: requestSpanId,
-        service: 'task-router-service',
-        level: 'info',
-        message: 'Message delivered successfully',
-        metadata: { messageId, attempts }
+        service: "task-router-service",
+        level: "info",
+        message: "Message delivered successfully",
+        metadata: { messageId, attempts },
       });
 
       return res.status(200).json({
-        status: 'delivered',
+        status: "delivered",
         attempts,
         messageId,
-        delivery: data
+        delivery: data,
       });
     } catch (err) {
       lastError = err;
@@ -90,26 +90,24 @@ router.post('/', async (req, res) => {
       await sendLog({
         traceId,
         spanId: requestSpanId,
-        service: 'task-router-service',
-        level: 'error',
-        message: 'Delivery attempt failed',
+        service: "task-router-service",
+        level: "error",
+        message: "Delivery attempt failed",
         metadata: {
           messageId,
           attempts,
-          error: err.message
-        }
+          error: err.message,
+        },
       });
     }
   }
 
   return res.status(502).json({
-    status: 'failed',
+    status: "failed",
     attempts,
     messageId,
-    error: lastError ? lastError.message : 'Unknown error'
+    error: lastError ? lastError.message : "Unknown error",
   });
 });
 
 module.exports = router;
-
-

@@ -1,5 +1,5 @@
-const db = require('../db');
-const config = require('../config');
+const db = require("../db");
+const config = require("../config");
 
 function saveMessage({ id, channel, to, message }, status) {
   return new Promise((resolve, reject) => {
@@ -32,5 +32,3 @@ function listMessages(limit = config.messageQueryLimit) {
 }
 
 module.exports = { saveMessage, listMessages };
-
-

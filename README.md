@@ -26,35 +26,6 @@ A 3-microservice system that routes messages to appropriate communication channe
    - Centralized log collection from all services
    - Stores logs in Elasticsearch for Kibana visualization
 
-### Data Flow
-
-```
-Client → Task Router → Delivery Service → SQLite DB
-         ↓              ↓
-      Logging Service → Elasticsearch
-```
-
-1. Client sends message to Task Router with `channel`, `to`, `message`
-2. Task Router validates, generates traceId, and routes to Delivery Service
-3. Delivery Service simulates sending and stores in SQLite
-4. Both services send logs to Logging Service with trace context
-5. Logging Service stores logs in Elasticsearch for observability
-
-## Communication Method and Reasoning
-
-**REST over HTTP** is used for inter-service communication:
-
-- **Simple setup**: No additional infrastructure (message queues) required
-- **Easy debugging**: Can inspect requests with Postman/curl
-- **Clear service boundaries**: Each service is independently deployable
-- **Sufficient for assignment**: Demonstrates microservices architecture
-
-**For production**, we would evolve to:
-
-- Async messaging (RabbitMQ/Kafka) for better decoupling
-- Message queues for retry handling and dead-letter queues
-- Circuit breakers for fault tolerance
-
 ## Setup & Run Instructions
 
 ### Prerequisites
